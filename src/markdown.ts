@@ -86,7 +86,10 @@ export enum Type {
   CodeText,
   CodeInfo,
   LinkTitle,
-  LinkLabel
+  LinkLabel,
+
+  // Separation-whitespace
+  Garbage,
 }
 
 /// Data structure used to accumulate a block's content during [leaf
@@ -473,15 +476,30 @@ const DefaultBlockParsers: {[name: string]: ((cx: BlockContext, line: Line) => B
   },
 
   ATXHeading(cx, line) {
+    // The size of the heading itself
     let size = isAtxHeading(line)
     if (size < 0) return false
+
+    // off: the offset of the content from the line start (ignores leading whitespace)
+    // from: the start position in the document + the `off` value
     let off = line.pos, from = cx.lineStart + off
+
+    // endOfSpace: The position after which no content or only whitespace exists on the line
+    // after: set to endOfSpace to start
     let endOfSpace = skipSpaceBack(line.text, line.text.length, off), after = endOfSpace
+
+    // line.next is the charCode after `pos` (so in a heading, probably #)
+    // this adjusts `after` to ignore trailing hashes (not sure why)
     while (after > off && line.text.charCodeAt(after - 1) == line.next) after--
+
     if (after == endOfSpace || after == off || !space(line.text.charCodeAt(after - 1))) after = line.text.length
-    let buf = cx.buffer
-      .write(Type.HeaderMark, 0, size)
-      .writeElements(cx.parser.parseInline(line.text.slice(off + size + 1, after), from + size + 1), -from)
+
+    let endOfGarbage = skipSpace(line.text, off + size)
+
+    let buf = cx.buffer.write(Type.HeaderMark, 0, size)
+    if (endOfGarbage > size) buf.write(Type.Garbage, size, endOfGarbage - off)
+    buf.writeElements(cx.parser.parseInline(line.text.slice(off + endOfGarbage, after), from + endOfGarbage), -from)
+
     if (after < line.text.length) buf.write(Type.HeaderMark, after - off, endOfSpace - off)
     let node = buf.finish(Type.ATXHeading1 - 1 + size, line.text.length - off)
     cx.nextLine()

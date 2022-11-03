@@ -4,8 +4,12 @@ import {SpecParser} from "./spec.js"
 
 const specParser = new SpecParser(parser)
 
-function test(name: string, spec: string) {
-  it(name, () => {
+function test(name: string, spec: string, {only}: {only?: boolean} = {}) {
+  let fn = it
+  if (only) {
+    fn = it.only
+  }
+  fn(name, () => {
     let {tree, doc} = specParser.parse(spec, name)
     compareTree(parser.parse(doc), tree)
   })
@@ -173,12 +177,12 @@ __}
 `)
 
   test("ATX headings (example 32)", `
-{H1:{h:#} foo}
-{H2:{h:##} foo}
-{H3:{h:###} foo}
-{H4:{h:####} foo}
-{H5:{h:#####} foo}
-{H6:{h:######} foo}
+{H1:{h:#}{g: }foo}
+{H2:{h:##}{g: }foo}
+{H3:{h:###}{g: }foo}
+{H4:{h:####}{g: }foo}
+{H5:{h:#####}{g: }foo}
+{H6:{h:######}{g: }foo}
 `)
 
   test("ATX headings (example 33)", `
@@ -196,17 +200,17 @@ __}
 `)
 
   test("ATX headings (example 36)", `
-{H1:{h:#} foo {Em:{e:*}bar{e:*}} {Esc:\\*}baz{Esc:\\*}}
+{H1:{h:#}{g: }foo {Em:{e:*}bar{e:*}} {Esc:\\*}baz{Esc:\\*}}
 `)
 
   test("ATX headings (example 37)", `
-{H1:{h:#}                  foo                     }
+{H1:{h:#}{g:                  }foo                     }
 `)
 
   test("ATX headings (example 38)", `
- {H3:{h:###} foo}
-  {H2:{h:##} foo}
-   {H1:{h:#} foo}
+ {H3:{h:###}{g: }foo}
+  {H2:{h:##}{g: }foo}
+   {H1:{h:#}{g: }foo}
 `)
 
   test("ATX headings (example 39)", `
@@ -219,49 +223,49 @@ __}
 `)
 
   test("ATX headings (example 41)", `
-{H2:{h:##} foo {h:##}}
-  {H3:{h:###}   bar    {h:###}}
+{H2:{h:##}{g: }foo {h:##}}
+  {H3:{h:###}{g:   }bar    {h:###}}
 `)
 
   test("ATX headings (example 42)", `
-{H1:{h:#} foo {h:##################################}}
-{H5:{h:#####} foo {h:##}}
+{H1:{h:#}{g: }foo {h:##################################}}
+{H5:{h:#####}{g: }foo {h:##}}
 `)
 
   test("ATX headings (example 43)", `
-{H3:{h:###} foo {h:###}     }
+{H3:{h:###}{g: }foo {h:###}     }
 `)
 
   test("ATX headings (example 44)", `
-{H3:{h:###} foo ### b}
+{H3:{h:###}{g: }foo ### b}
 `)
 
   test("ATX headings (example 45)", `
-{H1:{h:#} foo#}
+{H1:{h:#}{g: }foo#}
 `)
 
   test("ATX headings (example 46)", `
-{H3:{h:###} foo {Esc:\\#}##}
-{H2:{h:##} foo #{Esc:\\#}#}
-{H1:{h:#} foo {Esc:\\#}}
+{H3:{h:###}{g: }foo {Esc:\\#}##}
+{H2:{h:##}{g: }foo #{Esc:\\#}#}
+{H1:{h:#}{g: }foo {Esc:\\#}}
 `)
 
   test("ATX headings (example 47)", `
 {HR:****}
-{H2:{h:##} foo}
+{H2:{h:##}{g: }foo}
 {HR:****}
 `)
 
   test("ATX headings (example 48)", `
 {P:Foo bar}
-{H1:{h:#} baz}
+{H1:{h:#}{g: }baz}
 {P:Bar foo}
 `)
 
   test("ATX headings (example 49)", `
-{H2:{h:##} }
+{H2:{h:##}{g: }}
 {H1:{h:#}}
-{H3:{h:###} {h:###}}
+{H3:{h:###}{g: }{h:###}}
 `)
 
   test("Setext headings (example 50)", `
@@ -493,7 +497,7 @@ baz}
 `)
 
   test("Indented code blocks (example 85)", `
-{H1:{h:#} Heading}
+{H1:{h:#}{g: }Heading}
     {CB:{cT:foo}}
 {SH2:Heading
 {h:------}}
@@ -666,7 +670,7 @@ aaa}
 {FC:{c:~~~}
 {cT:bar}
 {c:~~~}}
-{H1:{h:#} baz}
+{H1:{h:#}{g: }baz}
 `)
 
   test("Fenced code blocks (example 112)", `
@@ -1159,7 +1163,7 @@ foo
 `)
 
   test("Link reference definitions (example 183)", `
-{H1:{h:#} {Ln:{L:[}Foo{L:]}}}
+{H1:{h:#}{g: }{Ln:{L:[}Foo{L:]}}}
 {LR:{LL:[foo]}{L::} {URL:/url}}
 {Q:{q:>} {P:bar}}
 `)
@@ -1251,25 +1255,25 @@ bbb}
 {P:aaa}
   
 
-{H1:{h:#} aaa}
+{H1:{h:#}{g: }aaa}
 
   
 `)
 
   test("Block quotes (example 198)", `
-{Q:{q:>} {H1:{h:#} Foo}
+{Q:{q:>} {H1:{h:#}{g: }Foo}
 {q:>} {P:bar
 {q:>} baz}}
 `)
 
   test("Block quotes (example 199)", `
-{Q:{q:>}{H1:{h:#} Foo}
+{Q:{q:>}{H1:{h:#}{g: }Foo}
 {q:>}{P:bar
 {q:>} baz}}
 `)
 
   test("Block quotes (example 200)", `
-   {Q:{q:>} {H1:{h:#} Foo}
+   {Q:{q:>} {H1:{h:#}{g: }Foo}
    {q:>} {P:bar
  {q:>} baz}}
 `)
@@ -1281,7 +1285,7 @@ bbb}
 `)
 
   test("Block quotes (example 202)", `
-{Q:{q:>} {H1:{h:#} Foo}
+{Q:{q:>} {H1:{h:#}{g: }Foo}
 {q:>} {P:bar
 baz}}
 `)
@@ -1703,7 +1707,7 @@ continued here.}}}}}
 `)
 
   test("List items (example 270)", `
-{BL:{LI:{l:-} {H1:{h:#} Foo}}
+{BL:{LI:{l:-} {H1:{h:#}{g: }Foo}}
 {LI:{l:-} {SH2:Bar
   {h:---}}
   {P:baz}}}
@@ -3508,11 +3512,11 @@ bar">}}
 `)
 
   test("Hard line breaks (example 643)", `
-{H3:{h:###} foo\\}
+{H3:{h:###}{g: }foo\\}
 `)
 
   test("Hard line breaks (example 644)", `
-{H3:{h:###} foo  }
+{H3:{h:###}{g: }foo  }
 `)
 
   test("Soft line breaks (example 645)", `

@@ -43,7 +43,8 @@ const abbrev: {[abbr: string]: string} = {
   cI: "CodeInfo",
   cT: "CodeText",
   LT: "LinkTitle",
-  LL: "LinkLabel"
+  LL: "LinkLabel",
+  g: "Garbage"
 }
 
 export class SpecParser {
