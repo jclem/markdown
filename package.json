@@ -1,6 +1,6 @@
 {
   "name": "@jclem/lezer-markdown",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Incremental Markdown parser that consumes and emits Lezer trees",
   "main": "dist/index.cjs",
   "type": "module",
@@ -28,8 +28,8 @@
     "@lezer/highlight": "^1.0.0"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/lezer-parser/markdown.git"
+    "type": "git",
+    "url": "https://github.com/lezer-parser/markdown.git"
   },
   "scripts": {
     "watch": "rollup -w -c rollup.config.js",
